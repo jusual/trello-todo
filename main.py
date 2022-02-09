@@ -61,11 +61,9 @@ def list_switch(color, points, cards, list_id):
             if "red" in colors and points >= 3:
                 card.change_list(list_id)
                 points -= 3
-                print(card.name, 3)
             elif points >= 1:
                 card.change_list(list_id)
                 points -= 1
-                print(card.name, 1)
 
     return points
 
@@ -74,11 +72,9 @@ def assign_tasks(length, free_list, random_list):
     cards = free_list.list_cards()
     for card in cards:
         for label in sorted(card.labels, key=attrgetter('color')):
-            print(label.color)
 
     # spend 3 effort points in a day
     points = length * 3
-    print(points)
 
     shuffled_cards = sample(cards, len(cards))
 
