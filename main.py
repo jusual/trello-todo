@@ -4,6 +4,8 @@ from datetime import date, timedelta, datetime
 from random import randint, sample
 from trello import TrelloClient
 
+#TODO make crond daily rather than at certain time or find a server
+
 client = TrelloClient(
     api_key = os.getenv('TRELLO_API_KEY'),
     api_secret = os.getenv('TRELLO_API_TOKEN'),
@@ -12,14 +14,15 @@ client = TrelloClient(
 
 def find_last_date(board):
     all_lists = board.get_lists("open")
+    #TODO go through all lists
     last_list = all_lists[0]
 
-    #TODO check for lists that are not either "Free" or in right date format
-    if last_list.name == "Free":
-        last_date = datetime.today() - timedelta(days=1)
-    else:
+    last_date = datetime.today() - timedelta(days=1)
+
+    try:
         last_date = datetime.strptime(last_list.name, "%a, %d %B")
-        last_date = last_date.replace(year=(datetime.today().year))
+    except ValueError:
+        pass
 
     return last_date
 
