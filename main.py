@@ -70,8 +70,6 @@ def list_switch(color, points, cards, list_id):
 
 def assign_tasks(length, free_list, random_list):
     cards = free_list.list_cards()
-    for card in cards:
-        for label in sorted(card.labels, key=attrgetter('color')):
 
     # spend 3 effort points in a day
     points = length * 3
