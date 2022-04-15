@@ -14,15 +14,19 @@ client = TrelloClient(
 
 def find_last_date(board):
     all_lists = board.get_lists("open")
-    #TODO go through all lists
-    last_list = all_lists[0]
 
-    last_date = datetime.today() - timedelta(days=1)
+    last_date = datetime.min
 
-    try:
-        last_date = datetime.strptime(last_list.name, "%a, %d %B")
-    except ValueError:
-        pass
+    for last_list in all_lists:
+        try:
+            list_date = datetime.strptime(last_list.name, "%a, %d %B")
+            if (list_date > last_date):
+                last_date = list_date
+        except ValueError:
+            pass
+
+    if (last_date == datetime.min):
+        last_date = datetime.today() - timedelta(days=1)
 
     return last_date
 
