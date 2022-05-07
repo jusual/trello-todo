@@ -4,7 +4,7 @@ from datetime import date, timedelta, datetime
 from random import randint, sample
 from trello import TrelloClient
 
-#TODO make crond daily rather than at certain time or find a server
+#TODO add dependent tasks (can be included in current sprint only if previous or dependent tasks were completed)
 
 client = TrelloClient(
     api_key = os.getenv('TRELLO_API_KEY'),
