@@ -11,24 +11,22 @@ client = TrelloClient(
     api_secret = os.getenv('TRELLO_API_TOKEN'),
 )
 
+# Find non-expired list
 
-def find_last_date(board):
+def need_new_list(board):
     all_lists = board.get_lists("open")
-
-    last_date = datetime.min
 
     for last_list in all_lists:
         try:
-            list_date = datetime.strptime(last_list.name, "%a, %d %B")
-            if (list_date > last_date):
-                last_date = list_date
+            list_date = datetime.strptime(last_list.name, "%a, %d %B").replace(year=datetime.today().year)
+
+            if (list_date >= datetime.today()):
+                return False
+
         except ValueError:
             pass
 
-    if (last_date == datetime.min):
-        last_date = datetime.today() - timedelta(days=1)
-
-    return last_date
+    return True
 
 
 def create_random_list(board):
@@ -91,9 +89,7 @@ def assign_tasks(length, free_list, random_list):
 all_boards = client.list_boards()
 board = all_boards[-1]
 
-last_date = find_last_date(board)
-
-if (datetime.today() > last_date):
+if (need_new_list(board)):
     #TODO move tasks that are left from due date back to free
 
     (random_list, length) = create_random_list(board)
