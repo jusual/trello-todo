@@ -18,9 +18,9 @@ def need_new_list(board):
 
     for last_list in all_lists:
         try:
-            list_date = datetime.strptime(last_list.name, "%a, %d %B").replace(year=datetime.today().year)
+            list_date = datetime.strptime(last_list.name, "%a, %d %B '%y").date()
 
-            if (list_date >= datetime.today()):
+            if (list_date >= date.today()):
                 return False
 
         except ValueError:
@@ -32,7 +32,7 @@ def need_new_list(board):
 def create_random_list(board):
     length = randint(2, 4)
     due_date = datetime.today() + timedelta(days=length-1)
-    random_list = board.add_list(due_date.strftime("%a, %d %B"))
+    random_list = board.add_list(due_date.strftime("%a, %d %B '%y"))
 
     return random_list, length
 
