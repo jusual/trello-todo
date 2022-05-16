@@ -84,10 +84,35 @@ def assign_tasks(length, free_list, random_list):
 
     return points
 
+#TODO remake need_new_list to rely on cleaning expired first
+def clean_expired_lists(board):
+    all_lists = board.get_lists("open")
+
+    free_list = next(filter(lambda x: x.name == "Free", all_lists))
+
+    for last_list in all_lists:
+        try:
+            list_date = datetime.strptime(last_list.name, "%a, %d %B '%y").date()
+
+            if (list_date < date.today()):
+                for card in last_list.list_cards():
+                    #TODO find better way to check if the task is done
+                    if card.member_id:
+                        card.change_list(free_list.id)
+                    else:
+                        card.set_closed(True)
+
+                last_list.close()
+
+        except ValueError:
+            pass
+
 
 #TODO choose board better
 all_boards = client.list_boards()
 board = all_boards[-1]
+
+clean_expired_lists(board)
 
 if (need_new_list(board)):
     #TODO move tasks that are left from due date back to free
