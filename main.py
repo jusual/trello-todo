@@ -52,7 +52,7 @@ def create_random_list(board):
 # low effort low impact
 # high effort low impact
 
-def list_switch(color, points, cards, list_id):
+def list_switch(board, color, points, cards, list_id):
     for card in cards:
         if points <= 0:
             return points
@@ -70,7 +70,7 @@ def list_switch(color, points, cards, list_id):
     return points
 
 
-def assign_tasks(length, free_list, random_list):
+def assign_tasks(board, length, free_list, random_list):
     cards = free_list.list_cards()
 
     # spend 3 effort points in a day
@@ -79,8 +79,8 @@ def assign_tasks(length, free_list, random_list):
     shuffled_cards = sample(cards, len(cards))
 
     # check high impact fisrt
-    points = list_switch("purple", points, shuffled_cards, random_list.id)
-    points = list_switch("blue", points, shuffled_cards, random_list.id)
+    points = list_switch(board, "purple", points, shuffled_cards, random_list.id)
+    points = list_switch(board, "blue", points, shuffled_cards, random_list.id)
 
     return points
 
@@ -121,6 +121,6 @@ if (need_new_list(board)):
 
     #TODO find free list by name
     free_list = board.get_lists("open")[-1]
-    points = assign_tasks(length, free_list, random_list)
+    points = assign_tasks(board, length, free_list, random_list)
 
 #TODO make list of finished tasks
