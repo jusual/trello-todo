@@ -1,7 +1,7 @@
 import os
 from operator import attrgetter
 from datetime import date, timedelta, datetime
-from random import randint, sample
+from random import randint, sample, choice
 from trello import TrelloClient
 
 #TODO add dependent tasks (can be included in current sprint only if previous or dependent tasks were completed)
@@ -10,6 +10,12 @@ client = TrelloClient(
     api_key = os.getenv('TRELLO_API_KEY'),
     api_secret = os.getenv('TRELLO_API_TOKEN'),
 )
+
+def handle_hobby_card(board, card):
+    all_lists = board.get_lists("open")
+    hobby_list = next(filter(lambda x: x.name == "Hobby", all_lists))
+    hobby_card = choice(hobby_list.list_cards())
+    card.attach(url=hobby_card.short_url)
 
 # Find non-expired list
 
@@ -56,6 +62,9 @@ def list_switch(board, color, points, cards, list_id):
     for card in cards:
         if points <= 0:
             return points
+
+        if card.name == "hobby":
+            handle_hobby_card(board, card)
 
         colors = [label.color for label in card.labels]
         if color in colors:
