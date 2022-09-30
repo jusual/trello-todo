@@ -94,11 +94,7 @@ def assign_tasks(board, length, free_list, random_list):
     return points
 
 #TODO remake need_new_list to rely on cleaning expired first
-def clean_expired_lists(board):
-    all_lists = board.get_lists("open")
-
-    free_list = next(filter(lambda x: x.name == "Free", all_lists))
-
+def clean_expired_lists(board, free_list):
     for last_list in all_lists:
         try:
             list_date = datetime.strptime(last_list.name, "%a, %d %B '%y").date()
@@ -121,15 +117,13 @@ def clean_expired_lists(board):
 all_boards = client.list_boards()
 board = all_boards[-1]
 
-clean_expired_lists(board)
+all_lists = board.get_lists("open")
+free_list = next(filter(lambda x: x.name == "Free", all_lists))
+
+clean_expired_lists(board, free_list)
 
 if (need_new_list(board)):
-    #TODO move tasks that are left from due date back to free
-
     (random_list, length) = create_random_list(board)
-
-    #TODO find free list by name
-    free_list = board.get_lists("open")[-1]
     points = assign_tasks(board, length, free_list, random_list)
 
 #TODO make list of finished tasks
