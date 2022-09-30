@@ -14,7 +14,7 @@ client = TrelloClient(
 def handle_hobby_card(board, card):
     all_lists = board.get_lists("open")
     hobby_list = next(filter(lambda x: x.name == "Hobby", all_lists))
-    hobby_card = choice(hobby_list.list_cards())
+    hobby_card = choice([x for x in hobby_list.list_cards() if not x.name.startswith('---')])
     card.attach(url=hobby_card.short_url)
 
 # Find non-expired list
