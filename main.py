@@ -1,4 +1,5 @@
 import os
+import argparse
 from operator import attrgetter
 from datetime import date, timedelta, datetime
 from random import randint, sample, choice
@@ -94,12 +95,12 @@ def assign_tasks(board, length, free_list, random_list):
     return points
 
 #TODO remake need_new_list to rely on cleaning expired first
-def clean_expired_lists(board, free_list):
+def clean_expired_lists(board, free_list, need_refresh):
     for last_list in all_lists:
         try:
             list_date = datetime.strptime(last_list.name, "%a, %d %B '%y").date()
 
-            if (list_date < date.today()):
+            if (list_date < date.today() or need_refresh):
                 for card in last_list.list_cards():
                     #TODO find better way to check if the task is done
                     if card.member_id:
@@ -113,6 +114,14 @@ def clean_expired_lists(board, free_list):
             pass
 
 
+# start of main code
+#TODO put separately
+
+parser = argparse.ArgumentParser(prog='trello-todo')
+parser.add_argument('-r', '--refresh', action='store_true', help='create new todo list')
+
+args = parser.parse_args()
+
 #TODO choose board better
 all_boards = client.list_boards()
 board = all_boards[-1]
@@ -120,7 +129,10 @@ board = all_boards[-1]
 all_lists = board.get_lists("open")
 free_list = next(filter(lambda x: x.name == "Free", all_lists))
 
-clean_expired_lists(board, free_list)
+# for all expired lists:
+#   put unfulfilled tasks back to the Free list, archive? everything left
+# if refresh is selected, do that to all dated lists
+clean_expired_lists(board, free_list, args.refresh)
 
 if (need_new_list(board)):
     (random_list, length) = create_random_list(board)
