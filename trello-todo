@@ -1,0 +1,5 @@
+#!/bin/bash
+#TODO find a way to export alias automatically
+
+. $TRELLO_DIR/init_token_env_var.sh
+/usr/bin/python $TRELLO_DIR/main.py $*
